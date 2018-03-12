@@ -1,0 +1,11 @@
+.roles_dropdown {
+    padding: 0;
+}
+.roles_dropdown li {
+    list-style: none;
+}
+
+.login-error {
+    color: #f62d2d;
+    font-style: italic;
+}

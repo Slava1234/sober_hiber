@@ -12,7 +12,7 @@ $(function () {
         var commentZone = $(this).closest('.text-size-14').find('.cv-row-comment');
 
         $.ajax({
-            url: locationURL + 'cv/update-comment/' + cvId,
+            url: locationURL + '/cv/update-comment/' + cvId,
             type: 'POST',
             data: {
                 comment: commentValue
@@ -21,7 +21,7 @@ $(function () {
             success: function (response) {
                 console.log("success from send " + response);
                 $.ajax({
-                    url: locationURL + 'cv/get-comment/' + cvId,
+                    url: locationURL + '/cv/get-comment/' + cvId,
                     type: 'POST',
                     dataType: 'text',
                     success: function (response) {
@@ -96,6 +96,7 @@ $(function () {
     var skills;
     var about;
     var comment;
+    var birth;
 
     var editable_fio;
     var editable_email;
@@ -107,6 +108,7 @@ $(function () {
     var editable_skills;
     var editable_about;
     var editable_comment;
+    var editable_birth;
 
 
     $('.edit-cv-btn').click(function () {
@@ -121,7 +123,7 @@ $(function () {
         skills = $(this).closest('tr').find('.cv-skills');
         about = $(this).closest('tr').find('.cv-about');
         comment = $(this).closest('tr').find('.cv-row-comment');
-
+        birth = $(this).closest('tr').find('.cv-birth');
 
         editable_fio = $('#dataInfoEdit .cv-edit-fio .form-control');
         editable_email = $('#dataInfoEdit .cv-edit-email .form-control');
@@ -133,6 +135,7 @@ $(function () {
         editable_skills = $('#dataInfoEdit .cv-edit-skills');
         editable_about = $('#dataInfoEdit .cv-edit-about');
         editable_comment = $('#dataInfoEdit .cv-edit-comment .form-control');
+        editable_birth = $('#dataInfoEdit .datepicker');
 
 
         editable_fio.val(fio.text());
@@ -146,13 +149,22 @@ $(function () {
         editable_about.val(about.text());
         editable_comment.val(comment.text());
 
-
+        // make good looking date format
+        var oldDate = birth.text();
+        var newDate = "";
+        var a = oldDate.split("-");
+        for (var i = a.length-1; i >= 0; i--) {
+            var dash = "";
+            if(i != 0)
+                dash = ".";
+            newDate += a[i] + dash;
+        }
+        editable_birth.val(newDate);
     });
 
     $('.cv-edit-save').click(function () {
-
         $.ajax({
-            url: locationURL + 'cv/update',
+            url: locationURL + '/cv/update',
             type: 'POST',
             data: {
                 cvId: cvId,
@@ -165,10 +177,11 @@ $(function () {
                 editable_experiance_places: editable_experiance_places.val(),
                 editable_skills: editable_skills.val(),
                 editable_about: editable_about.val(),
-                editable_comment: editable_comment.val()
+                editable_comment: editable_comment.val(),
+                editable_birth: editable_birth.val()
             },
             success: function (response) {
-                console.log("cv has been successfully updated");
+                console.log("cv has been successfully updated + " + response);
                 fio.text(editable_fio.val());
                 email.text(editable_email.val());
                 phone.text(editable_phone.val());
@@ -179,6 +192,7 @@ $(function () {
                 skills.text(editable_skills.val());
                 about.text(editable_about.val());
                 comment.text(editable_comment.val());
+                birth.text(editable_birth.val());
             },
             error: function (error) {
                 console.log("error! cv has not been updated : ");
@@ -197,7 +211,7 @@ $(function () {
                 locationURL = locationURL.replace("bookmarks", '');
             }
 
-            $(this).attr('src', locationURL + 'resources/img/add_new_star.png');
+            $(this).attr('src', locationURL + '/resources/img/add_new_star.png');
             $(this).attr('state', 0);
 
             $.ajax({
@@ -219,7 +233,7 @@ $(function () {
             if (locationURL.search(/bookmarks/)) {
                 locationURL = locationURL.replace("bookmarks", '');
             }
-            $(this).attr('src', locationURL + 'resources/img/star_added.png');
+            $(this).attr('src', locationURL + '/resources/img/star_added.png');
             $(this).attr('state', 1);
 
 
@@ -239,10 +253,6 @@ $(function () {
             });
         }
     });
-
-
-    // показать только избранное
-    $('.bookmark-show-btn').datep
 
 
 });

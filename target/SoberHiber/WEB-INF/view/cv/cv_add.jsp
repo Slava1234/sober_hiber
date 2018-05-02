@@ -11,7 +11,8 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container col-md-6 col-md-offset-3">
+    <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/"  class="btn btn-primary">Назад</a><br><br>
     <form method="post" action="${pageContext.request.contextPath}/cv/add_new_cv" modelAttribute="cv">
 
         <div class="form-group">

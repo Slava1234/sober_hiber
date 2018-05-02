@@ -8,6 +8,9 @@ import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 import ru.sober.model.Cv;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -23,14 +26,6 @@ public class CvDaoImpl implements CvDao {
     @Override
     public void addCv(Cv cv) {
         Session session = this.sessionFactory.getCurrentSession();
-
-        String s = cv.getBirthdate();
-
-        String[] as = s.split(".");
-
-        StringBuilder sb = new StringBuilder();
-
-
         session.persist(cv);
     }
 

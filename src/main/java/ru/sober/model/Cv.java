@@ -1,6 +1,7 @@
 package ru.sober.model;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name = "cv")
@@ -16,6 +17,9 @@ public class Cv {
 
     @Column(name = "birthdate")
     private String birthdate;
+
+    @Column(name = "birth")
+    private Date birth;
 
     @Column(name = "phone")
     private String phone;
@@ -70,6 +74,14 @@ public class Cv {
 
     public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
     }
 
     public String getPhone() {
@@ -150,6 +162,7 @@ public class Cv {
                 "id=" + id +
                 ", fio='" + fio + '\'' +
                 ", birthdate='" + birthdate + '\'' +
+                ", birth=" + birth +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", sellary='" + sellary + '\'' +

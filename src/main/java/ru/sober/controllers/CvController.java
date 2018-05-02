@@ -13,6 +13,9 @@ import ru.sober.model.Cv;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.sql.DataSource;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -64,10 +67,6 @@ public class CvController {
     }
 
 
-
-
-
-
     @RequestMapping(value = "/cv/update-comment/{id}", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> postUpdateCommentAjax(@PathVariable("id") String id, @RequestParam("comment") String comment) {
@@ -77,13 +76,6 @@ public class CvController {
         httpHeaders.add("Content-type", "text/html;charset=UTF-8");
         return new ResponseEntity<String>("true", httpHeaders, HttpStatus.OK);
     }
-
-
-
-
-
-
-
 
 
     @RequestMapping(value = "/cv/get-comment/{id}", method = RequestMethod.POST)
@@ -99,18 +91,6 @@ public class CvController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     @RequestMapping(value = "/cv/get-cv/{id}", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Cv postGetCvAjax(@PathVariable("id") String id) {
@@ -122,17 +102,16 @@ public class CvController {
     }
 
 
-
-
     @RequestMapping(value = "/cv/update", method = RequestMethod.POST)
     @ResponseBody
-    public void postUpdate(
+    public void  postUpdate(
             @RequestParam(value = "cvId", required = false) Integer cvId,
             @RequestParam(value = "editable_fio", required = false) String editable_fio,
             @RequestParam(value = "editable_email", required = false) String editable_email,
             @RequestParam(value = "editable_phone", required = false) String editable_phone,
             @RequestParam(value = "editable_sellary", required = false) String editable_sellary,
             @RequestParam(value = "editable_birthdate", required = false) String editable_birthdate,
+            @RequestParam(value = "editable_birth", required = false) String editable_birth,
             @RequestParam(value = "editable_experiance_years", required = false) String editable_experiance_years,
             @RequestParam(value = "editable_experiance_places", required = false) String editable_experiance_places,
             @RequestParam(value = "editable_skills", required = false) String editable_skills,
@@ -152,10 +131,58 @@ public class CvController {
         cv.setSkills(editable_skills);
         cv.setAbout(editable_about);
         cv.setComment(editable_comment);
+        cv.setBookmark(0);
 
+        String[] as = editable_birth.split("\\.");
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = as.length - 1; i >= 0; i--) {
+        //for (int i = 0; i < as.length; i++) {
+            String dash = "";
+            if (i != 0)
+                dash = "-";
+            sb.append(as[i] + dash);
+        }
+
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date parsed = null;
+        try {
+            parsed = format.parse(sb.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        java.sql.Date sql = null;
+        try {
+            sql = new java.sql.Date(parsed.getTime());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        cv.setBirth(sql);
 
         cvServiceImpl.updateCv(cv);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*@RequestMapping(value = "/cv/delete", method = RequestMethod.GET)
     public String getDelete(@RequestParam("id") int id) {
@@ -201,8 +228,6 @@ public class CvController {
     }
 
 
-
-
     @RequestMapping(value = "/cv/change-bookmark-state", method = RequestMethod.POST)
     @ResponseBody
     public void postChangeBookmarkState(
@@ -212,10 +237,6 @@ public class CvController {
         Integer state2 = Integer.parseInt(state);
         cvServiceImpl.changeBookmarkState(cvId, state2);
     }
-
-
-
-
 
 
     @RequestMapping(value = "/bookmarks", method = RequestMethod.GET, produces = "application/json")
@@ -228,19 +249,6 @@ public class CvController {
 
         return modelAndView;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

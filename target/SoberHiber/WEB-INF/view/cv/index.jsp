@@ -10,6 +10,7 @@
     <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
 
     <link rel="stylesheet" href="http://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <title>Резюме</title>
 
 
@@ -26,9 +27,14 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <a style="margin-top: 5px;" class="btn btn-success" href="${pageContext.request.contextPath}/cv/add">Добавить</a>
-                <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/bookmarks"  class="btn bookmark-show-btn">Избранные</a>
+                <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/bookmarks"
+                   class="btn btn-primary bookmark-show-btn">
+                    <img style="width: 20px;"
+                         src="<c:url value="/resources/img/star_added.png" />"
+                         alt="bookmark"/>
+                    Избранные
+                </a>
             </div>
-
 
 
         </div><!-- /.container-fluid -->
@@ -50,6 +56,7 @@
             <th hidden class="text-size-14 font-size-13" scope="col">experiance_places</th>
             <th hidden class="text-size-14 font-size-13" scope="col">skills</th>
             <th hidden class="text-size-14 font-size-13" scope="col">about</th>
+            <th hidden class="text-size-14 font-size-13" scope="col">birth</th>
         </tr>
         </thead>
         <tbody>
@@ -73,7 +80,7 @@
                     <div class="btn-group dropleft">
 
                         <a href="" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                           aria-expanded="false">Редактировать</a>
+                           aria-expanded="false">Комментировать</a>
                         <div class="dropdown-menu"
                              style="width: 200px; text-align: center;padding-top: 0px;height: 165px;">
                             <div class="form-group">
@@ -114,14 +121,12 @@
                     </c:choose>
 
 
-
-
-
                 </td>
 
                 <td hidden class="cv-experiance_places text-size-14 font-size-13">${cv.experiance_places}</td>
                 <td hidden class="cv-skills text-size-14 font-size-13">${cv.skills}</td>
                 <td hidden class="cv-about text-size-14 font-size-13">${cv.about}</td>
+                <td hidden class="cv-birth text-size-14 font-size-13">${cv.birth}</td>
 
             </tr>
         </c:forEach>
@@ -233,12 +238,12 @@
                     <tr>
                         <td class="cv-edit-fio font-size-13">
                             <div class="form-group">
-                                <input type="text" class="form-control">
+                                <input name="editable_fio" type="text" class="form-control">
                             </div>
                         </td>
                         <td class="cv-edit-email font-size-13">
                             <div class="form-group">
-                                <input type="text" class="form-control">
+                                <input name="editable_email" type="text" class="form-control">
                             </div>
                         </td>
                     </tr>
@@ -256,12 +261,12 @@
                     <tr>
                         <td class="cv-edit-phone font-size-13">
                             <div class="form-group">
-                                <input type="text" class="form-control">
+                                <input name="editable_phone" type="text" class="form-control">
                             </div>
                         </td>
                         <td class="cv-edit-sellary font-size-13">
                             <div class="form-group">
-                                <input type="text" class="form-control">
+                                <input name="editable_sellary" type="text" class="form-control">
                             </div>
                         </td>
                     </tr>
@@ -279,42 +284,48 @@
                     <tr>
                         <td class="cv-edit-birthday font-size-13">
                             <div class="form-group">
-                                <input type="text" class="form-control">
+                                <input name="editable_birthdate" type="text" class="form-control">
                             </div>
                         </td>
                         <td class="cv-edit-experiance-years font-size-13">
                             <div class="form-group">
-                                <input type="text" class="form-control">
+                                <input name="editable_experiance_years" type="text" class="form-control">
                             </div>
                         </td>
                     </tr>
                     </tbody>
                 </table>
 
+                <!---->
+                <h4 class="font-size-15 font-size-13">Новая дата рождения</h4>
+                <div class="form-group">
+                    <input name="editable_birth" type="text" class="form-control datepicker">
+                </div>
+
                 <hr>
                 <h4 class="font-size-15">Места работы</h4>
                 <div class="form-group">
-                    <textarea class="cv-edit-experiance-place font-size-13 form-control" style="width: 100%"
+                    <textarea name="editable_experiance_places" class="cv-edit-experiance-place font-size-13 form-control" style="width: 100%"
                               rows="12"></textarea>
                 </div>
 
                 <hr>
                 <h4 class="font-size-15">Навыки</h4>
                 <div class="form-group">
-                <textarea class="cv-edit-skills font-size-13 form-control" style="width: 100%"
+                <textarea name="editable_skills" class="cv-edit-skills font-size-13 form-control" style="width: 100%"
                           rows="12"></textarea>
                 </div>
 
                 <hr>
                 <h4 class="font-size-15">Общие данные</h4>
                 <div class="form-group">
-                    <textarea class="cv-edit-about font-size-13 form-control" style="width: 100%" rows="8"></textarea>
+                    <textarea name="editable_about" class="cv-edit-about font-size-13 form-control" style="width: 100%" rows="8"></textarea>
                 </div>
 
                 <hr>
                 <h4 class="font-size-15">Комментарий</h4>
                 <div class="form-group cv-edit-comment font-size-13">
-                    <input type="text" class="form-control">
+                    <input name="editable_comment" type="text" class="form-control">
                 </div>
 
 
@@ -332,10 +343,20 @@
 <script src="<c:url value="/resources/js/bootstrap.js" />"></script>
 <script src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="<c:url value="/resources/js/script.js" />"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
 <script>
     $(document).ready(function () {
         $('#cv-data-table').DataTable();
 
+        $( ".datepicker" ).datepicker({
+            dateFormat : 'dd.mm.yy',
+            changeMonth : true,
+            changeYear : true,
+            yearRange: '-100y:c+nn',
+            maxDate: '-1d'
+        });
 
 
         // preloader

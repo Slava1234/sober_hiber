@@ -1,11 +1,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:security="http://www.springframework.org/schema/security"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 
     <mvc:default-servlet-handler/>
@@ -17,21 +22,6 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <!-- Localization -->
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="/WEB-INF/locales/messages"/>
-        <property name="defaultEncoding" value="UTF-8"/>
-    </bean>
-
-    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-        <property name="paramName" value="lang"/>
-    </bean>
-
-    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-        <property name="defaultLocale" value="en"/>
-    </bean>
-
-
     <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
     </bean>
@@ -41,13 +31,14 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+
     <!-- Database Information -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
-        <!--property name="url" value="jdbc:postgresql://localhost:5432/hiber_one"/-->
-        <property name="url" value="jdbc:mysql://localhost:3306/hiber_one"/>
-        <property name="username" value="root"/>
-        <property name="password" value="shuffle"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/cv_db" />
+        <property name="username" value="postgres"/>
+        <!--property name="password" value="zxcv555"/-->
+        <property name="password" value="shuffle" />
     </bean>
 
     <bean id="hibernate4AnnotatedSessionFactory"
@@ -55,9 +46,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="annotatedClasses">
             <list>
-                <value>ru.sober.model.User</value>
-                <value>ru.sober.model.Role</value>
-                <value>ru.sober.model.embeddable.Address</value>
+                <value>ru.sober.model.Cv</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -70,23 +59,16 @@
     </bean>
 
 
-    <!--********* USER *********-->
-    <bean id="userDao" class="ru.sober.dao.UserDaoImpl">
+    <!-- CV injection -->
+    <bean id="cvDao" class="ru.sober.dao.CvDaoImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
     </bean>
 
-    <bean id="userServiceImpl" class="ru.sober.service.UserServiceImpl">
-        <property name="userDao" ref="userDao"/>
+    <bean id="cvServiceImpl" class="ru.sober.service.CvServiceImpl">
+        <property name="cvDao" ref="cvDao"/>
     </bean>
 
-    <!--********* Role *********-->
-    <bean id="roleDao" class="ru.sober.dao.RoleDaoImpl">
-        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
-    </bean>
 
-    <bean id="roleServiceImpl" class="ru.sober.service.RoleServiceImpl">
-        <property name="roleDao" ref="roleDao"/>
-    </bean>
 
 
 </beans>

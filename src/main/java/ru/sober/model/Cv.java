@@ -18,9 +18,6 @@ public class Cv {
     @Column(name = "birthdate")
     private String birthdate;
 
-    @Column(name = "birth")
-    private Date birth;
-
     @Column(name = "phone")
     private String phone;
 
@@ -29,7 +26,6 @@ public class Cv {
 
     @Column(name = "sellary")
     private String sellary;
-
 
     @Column(name = "experiance_years")
     private String experiance_years;
@@ -48,6 +44,9 @@ public class Cv {
 
     @Column(name = "bookmark")
     private Integer bookmark;
+
+    @Column(name = "birth")
+    private Date birth;
 
     public Cv() {
     }

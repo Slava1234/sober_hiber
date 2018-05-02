@@ -55,8 +55,66 @@ public class CvController {
 
     @RequestMapping(value = "/cv/add_new_cv", method = RequestMethod.POST)
     public String postAdd(@ModelAttribute("cv") Cv cv) {
+
+        String[] as = cv.getBirthdate().split("\\.");
+        StringBuilder sb = new StringBuilder();
+
+        for (int j = as.length - 1; j >= 0; j--) {
+            String dash = "";
+            if (j != 0)
+                dash = "-";
+            sb.append(as[j] + dash);
+        }
+
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date parsed = null;
+        try {
+            parsed = format.parse(sb.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        java.sql.Date sql = null;
+        try {
+            sql = new java.sql.Date(parsed.getTime());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        cv.setBirth(sql);
+
         cvServiceImpl.addCv(cv);
         return "redirect:/";
+    }
+
+    private Date reformatRowDate(String rowDate) {
+        String[] as = rowDate.split("\\.");
+        StringBuilder sb = new StringBuilder();
+
+        for (int j = as.length - 1; j >= 0; j--) {
+            String dash = "";
+            if (j != 0)
+                dash = "-";
+            sb.append(as[j] + dash);
+        }
+
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date parsed = null;
+        try {
+            parsed = format.parse(sb.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        java.sql.Date sql = null;
+        try {
+            sql = new java.sql.Date(parsed.getTime());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return sql;
     }
 
 
@@ -164,20 +222,6 @@ public class CvController {
 
         cvServiceImpl.updateCv(cv);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

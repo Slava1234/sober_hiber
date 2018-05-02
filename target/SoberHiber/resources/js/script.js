@@ -189,50 +189,60 @@ $(function () {
     });
 
 
-    // добавить резюме в закладки
-    $('.bookmark-cv-add').click(function() {
-        $(this).closest('tr').find('.bookmark-cv-add').hide();
-        $(this).closest('tr').find('.bookmark-cv-added').show();
-
+    $('.bookmark-cv').click(function () {
         var cvId = $(this).closest('tr').find('.cv_id').text();
+        if ($(this).attr('state') == 1) { // добавить резюме в закладки
 
-        /*$.ajax({
-            url: locationURL + '/cv/add-bookmark',
-            type: 'POST',
-            data: {
-                cvId: cvId,
-                state: '1'
-            },
-            success: function (response) {
-                console.log("cv has been successfully bookmarked");
-            },
-            error: function (error) {
-                console.log("error! cv has not been bookmarked");
+            if (locationURL.search(/bookmarks/)) {
+                locationURL = locationURL.replace("bookmarks", '');
             }
-        });*/
+
+            $(this).attr('src', locationURL + 'resources/img/add_new_star.png');
+            $(this).attr('state', 0);
+
+            $.ajax({
+                url: locationURL + '/cv/change-bookmark-state',
+                type: 'POST',
+                data: {
+                    cvId: cvId,
+                    state: '0'
+                },
+                success: function (response) {
+                    console.log("cv has successfully removed bookmark");
+                },
+                error: function (error) {
+                    console.log("error! cv has not been bookmarked");
+                }
+            });
+        } else { // удалить резюме из закладок
+
+            if (locationURL.search(/bookmarks/)) {
+                locationURL = locationURL.replace("bookmarks", '');
+            }
+            $(this).attr('src', locationURL + 'resources/img/star_added.png');
+            $(this).attr('state', 1);
+
+
+            $.ajax({
+                url: locationURL + '/cv/change-bookmark-state',
+                type: 'POST',
+                data: {
+                    cvId: cvId,
+                    state: '1'
+                },
+                success: function (response) {
+                    console.log("cv has been successfully bookmarked");
+                },
+                error: function (error) {
+                    console.log("error! cv has not been bookmarked");
+                }
+            });
+        }
     });
 
-    // удалить резюме из закладок
-    $('.bookmark-cv-added').click(function() {
-        $(this).closest('tr').find('.bookmark-cv-add').show();
-        $(this).closest('tr').find('.bookmark-cv-added').hide();
 
-        var cvId = $(this).closest('tr').find('.cv_id').text();
-        /*$.ajax({
-            url: locationURL + '/cv/add-bookmark',
-            type: 'POST',
-            data: {
-                cvId: cvId,
-                state: '0'
-            },
-            success: function (response) {
-                console.log("cv is not bookmarked");
-            },
-            error: function (error) {
-                console.log("error! cv is still bookmarked");
-            }
-        });*/
-    });
+    // показать только избранное
+    $('.bookmark-show-btn').datep
 
 
 });

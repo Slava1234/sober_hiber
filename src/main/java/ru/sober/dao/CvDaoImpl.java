@@ -13,6 +13,7 @@ import java.util.Map;
 
 @Repository
 public class CvDaoImpl implements CvDao {
+
     private SessionFactory sessionFactory;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
@@ -22,6 +23,14 @@ public class CvDaoImpl implements CvDao {
     @Override
     public void addCv(Cv cv) {
         Session session = this.sessionFactory.getCurrentSession();
+
+        String s = cv.getBirthdate();
+
+        String[] as = s.split(".");
+
+        StringBuilder sb = new StringBuilder();
+
+
         session.persist(cv);
     }
 
@@ -146,9 +155,17 @@ public class CvDaoImpl implements CvDao {
         String hqlUpdate = "update Cv cv set cv.bookmark = :bookmarkState where cv.id = :cvId";
 
         int updatedEntities = session.createQuery(hqlUpdate)
-                .setInteger("bookmarkState", 0)
-                .setInteger("cvId", 1)
+                .setInteger("bookmarkState", state)
+                .setInteger("cvId", id)
                 .executeUpdate();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Cv> getBookmarks() {
+        Session session = this.sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Cv.class);
+        criteria.add(Restrictions.eq("bookmark", 1));
+        return criteria.list();
     }
 
 

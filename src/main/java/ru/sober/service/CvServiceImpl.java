@@ -70,4 +70,21 @@ public class CvServiceImpl implements CvDao {
     public void changeBookmarkState(int id, int state) {
         this.cvDao.changeBookmarkState(id, state);
     }
+
+    @Override
+    @Transactional
+    public List<Cv> getBookmarks() {
+        return this.cvDao.getBookmarks();
+    }
+
 }
+
+
+
+
+
+
+
+
+
+

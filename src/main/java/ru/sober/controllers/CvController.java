@@ -203,9 +203,9 @@ public class CvController {
 
 
 
-    @RequestMapping(value = "/cv/add-bookmark", method = RequestMethod.POST)
+    @RequestMapping(value = "/cv/change-bookmark-state", method = RequestMethod.POST)
     @ResponseBody
-    public void postAddBookmark(
+    public void postChangeBookmarkState(
             @RequestParam(value = "cvId", required = true) Integer cvId,
             @RequestParam(value = "state", required = true) String state
     ) {
@@ -218,7 +218,16 @@ public class CvController {
 
 
 
+    @RequestMapping(value = "/bookmarks", method = RequestMethod.GET, produces = "application/json")
+    public ModelAndView getBookmarks() {
+        List<Cv> cvs = cvServiceImpl.getBookmarks();
 
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("cv/bookmarks");
+        modelAndView.addObject("cvs", cvs);
+
+        return modelAndView;
+    }
 
 
 

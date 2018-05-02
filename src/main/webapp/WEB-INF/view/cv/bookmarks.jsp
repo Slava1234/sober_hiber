@@ -10,7 +10,7 @@
     <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
 
     <link rel="stylesheet" href="http://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-    <title>Резюме</title>
+    <title>Bookmarks</title>
 
 
 </head>
@@ -26,7 +26,7 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <a style="margin-top: 5px;" class="btn btn-success" href="${pageContext.request.contextPath}/cv/add">Добавить</a>
-                <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/bookmarks"  class="btn bookmark-show-btn">Избранные</a>
+                <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/"  class="btn btn-primary">Все резюме</a>
             </div>
 
 

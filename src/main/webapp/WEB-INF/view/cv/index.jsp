@@ -10,13 +10,14 @@
     <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
 
     <link rel="stylesheet" href="http://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-    <title>User data</title>
+    <title>Резюме</title>
 
 
 </head>
 <body>
 
 <div class="container col-md-12">
+
 
     <div class="preloader"></div>
 
@@ -25,7 +26,10 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <a style="margin-top: 5px;" class="btn btn-success" href="${pageContext.request.contextPath}/cv/add">Добавить</a>
+                <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/bookmarks"  class="btn bookmark-show-btn">Избранные</a>
             </div>
+
+
 
         </div><!-- /.container-fluid -->
     </nav>
@@ -96,21 +100,18 @@
 
                     <c:choose>
                         <c:when test="${cv.bookmark=='1'}">
-                            <img class="bookmark-cv-added"
+                            <img class="bookmark-cv" state="1"
                                  style="width: 30px;cursor: pointer;"
                                  src="<c:url value="/resources/img/star_added.png" />"
                                  alt="bookmark"/>
                         </c:when>
                         <c:otherwise>
-                            <img class="bookmark-cv-add"
+                            <img class="bookmark-cv" state="0"
                                  style="width: 30px;cursor: pointer;"
                                  src="<c:url value="/resources/img/add_new_star.png" />"
                                  alt="bookmark"/>
                         </c:otherwise>
                     </c:choose>
-
-
-
 
 
 

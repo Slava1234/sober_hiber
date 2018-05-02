@@ -9,6 +9,32 @@
     font-family: "Courier New";
 }
 
+.bookmark-show-btn {
+    background-color: #fac32b;
+    border: 1px solid #fac32b;
+    color: #fff;
+}
+
+.bookmark-show-btn:hover {
+    background-color: #fbbc10;
+    border: 1px solid #fac32b;
+    color: #fff;
+}
+
+.bookmark-show-btn:active {
+    background-color: #fbbc10;
+    border: 1px solid #fac32b;
+    color: #fff;
+}
+.bookmark-show-btn:focus {
+    background-color: #fbbc10;
+    border: 1px solid #fac32b;
+    color: #fff;
+}
+
+
+
+
 .preloader {
     position: absolute;
     width: 100%;

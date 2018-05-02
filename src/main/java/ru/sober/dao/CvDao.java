@@ -23,4 +23,6 @@ public interface CvDao {
     public List<Cv> searchCvs(Map<String, String> map, String searchQuery);
 
     public void changeBookmarkState(int id, int state);
+
+    public List<Cv> getBookmarks();
 }

@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <link href="<c:url value="/resources/css/bootstrap.css" />" rel="stylesheet">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <title>Title</title>
 </head>
 <body>
@@ -20,7 +21,7 @@
 
         <div class="form-group">
             <label for="birthdate">Дата рождения</label>
-            <input name="birthdate" type="text" class="form-control" id="birthdate" placeholder="Дата рождения">
+            <input name="birthdate" type="text" class="form-control datepicker" id="birthdate" placeholder="Дата рождения">
         </div>
 
         <div class="form-group">
@@ -64,13 +65,26 @@
         </div>
 
 
-
-        <button type="submit" class="btn btn-primary">Добавить</button>
+        <button type="submit" class="btn btn-success">Добавить</button>
     </form>
 
 </div>
 
 <script src="<c:url value="/resources/js/jquery.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap.js" />"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+    $(function() {
+        $( ".datepicker" ).datepicker({
+            dateFormat : 'dd.mm.yy',
+            changeMonth : true,
+            changeYear : true,
+            yearRange: '-100y:c+nn',
+            maxDate: '-1d'
+        });
+    });
+
+</script>
 </body>
 </html>

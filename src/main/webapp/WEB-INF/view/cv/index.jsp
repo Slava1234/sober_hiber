@@ -57,6 +57,7 @@
             <th hidden class="text-size-14 font-size-13" scope="col">skills</th>
             <th hidden class="text-size-14 font-size-13" scope="col">about</th>
             <th hidden class="text-size-14 font-size-13" scope="col">birth</th>
+            <th hidden class="text-size-14 font-size-13" scope="col">file</th>
         </tr>
         </thead>
         <tbody>
@@ -127,6 +128,7 @@
                 <td hidden class="cv-skills text-size-14 font-size-13">${cv.skills}</td>
                 <td hidden class="cv-about text-size-14 font-size-13">${cv.about}</td>
                 <td hidden class="cv-birth text-size-14 font-size-13">${cv.birth}</td>
+                <td hidden class="cv-file text-size-14 font-size-13">${cv.filename}</td>
 
             </tr>
         </c:forEach>
@@ -158,7 +160,7 @@
                     <tbody>
                     <tr>
                         <td class="cv-view-fio font-size-13"></td>
-                        <td class="cv-view-email font-size-13">cv.email</td>
+                        <td class="cv-view-email font-size-13"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -172,8 +174,8 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="cv-view-phone font-size-13">cv.phone</td>
-                        <td class="cv-view-sellary font-size-13">cv.sellary</td>
+                        <td class="cv-view-phone font-size-13"></td>
+                        <td class="cv-view-sellary font-size-13"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -187,15 +189,15 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="cv-view-birthday font-size-13">cv.birthdate</td>
-                        <td class="cv-view-experiance-years font-size-13">cv.experiance_years</td>
+                        <td class="cv-view-birthday font-size-13"></td>
+                        <td class="cv-view-experiance-years font-size-13"></td>
                     </tr>
                     </tbody>
                 </table>
 
                 <hr>
                 <h4 class="font-size-15">Места работы</h4>
-                <textarea class="cv-view-experiance-place font-size-13" style="width: 100%" readonly rows="12">cv.experiance_place</textarea>
+                <textarea class="cv-view-experiance-place font-size-13" style="width: 100%" readonly rows="12"></textarea>
 
                 <hr>
                 <h4 class="font-size-15">Навыки</h4>
@@ -204,11 +206,15 @@
 
                 <hr>
                 <h4 class="font-size-15">Общие данные</h4>
-                <textarea class="cv-view-about font-size-13" style="width: 100%" readonly rows="8">cv.about</textarea>
+                <textarea class="cv-view-about font-size-13" style="width: 100%" readonly rows="8"></textarea>
 
                 <hr>
                 <h4 class="font-size-15">Комментарий</h4>
-                <p class="cv-view-comment font-size-13">cv.comment</p>
+                <p class="cv-view-comment font-size-13"></p>
+
+                <hr>
+                <h4 class="font-size-15">Скачать резюме</h4>
+                <a href="" download class="cv-view-file-download" target="_blank">Скачать</a>
             </div>
         </div>
     </div>

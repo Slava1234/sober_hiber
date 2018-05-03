@@ -13,7 +13,11 @@
 
 <div class="container col-md-6 col-md-offset-3">
     <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/"  class="btn btn-primary">Назад</a><br><br>
-    <form method="post" action="${pageContext.request.contextPath}/cv/add_new_cv" modelAttribute="cv">
+    <form
+            method="post"
+            action="${pageContext.request.contextPath}/cv/add_new_cv"
+            modelAttribute="cv"
+            enctype="multipart/form-data">
 
         <div class="form-group">
             <label for="fio">ФИО</label>
@@ -63,6 +67,11 @@
         <div class="form-group">
             <label for="comment">Комментарий</label>
             <input name="comment" type="text" class="form-control" id="comment" placeholder="Комментарий">
+        </div>
+
+        <div class="form-group">
+            <label for="file">Резюме документ</label>
+            <input name="file" type="file" class="form-control" id="file" placeholder="Резюме документ">
         </div>
 
 

@@ -48,6 +48,9 @@ public class Cv {
     @Column(name = "birth")
     private Date birth;
 
+    @Column(name = "filename")
+    private String filename;
+
     public Cv() {
     }
 
@@ -73,14 +76,6 @@ public class Cv {
 
     public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
-    }
-
-    public Date getBirth() {
-        return birth;
-    }
-
-    public void setBirth(Date birth) {
-        this.birth = birth;
     }
 
     public String getPhone() {
@@ -155,13 +150,28 @@ public class Cv {
         this.bookmark = bookmark;
     }
 
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     @Override
     public String toString() {
         return "Cv{" +
                 "id=" + id +
                 ", fio='" + fio + '\'' +
                 ", birthdate='" + birthdate + '\'' +
-                ", birth=" + birth +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", sellary='" + sellary + '\'' +
@@ -171,6 +181,8 @@ public class Cv {
                 ", about='" + about + '\'' +
                 ", comment='" + comment + '\'' +
                 ", bookmark=" + bookmark +
+                ", birth=" + birth +
+                ", filename='" + filename + '\'' +
                 '}';
     }
 }

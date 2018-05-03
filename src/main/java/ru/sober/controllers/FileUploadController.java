@@ -4,6 +4,9 @@ package ru.sober.controllers;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.Calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,15 +38,22 @@ public class FileUploadController {
     @RequestMapping(value = "/u", method = RequestMethod.GET)
     @ResponseBody
     public String uploadFileHandler3(HttpServletRequest request) {
-        String resources =  request.getSession().getServletContext().getRealPath("/resources/");
-        return resources + File.separator + "files";
+        String name = "";
+
+        String resources = request.getSession().getServletContext().getRealPath("/resources/") +
+                File.separator + "files" + File.separator + name;
+
+        File fileToDelete = new File(resources);
+        boolean success = fileToDelete.delete();
+
+        return "status " + success;
     }
 
 
-        /**
-         * Upload single file using Spring Controller
-         */
-    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+    /**
+     * Upload single file using Spring Controller
+     */
+    /*@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     public @ResponseBody
     String uploadFileHandler(@RequestParam("file") MultipartFile file,
                              HttpServletRequest request) {
@@ -85,7 +95,7 @@ public class FileUploadController {
             return "2 You failed to upload " + file.getOriginalFilename()
                     + " because the file was empty.";
         }
-    }
+    }*/
 
     /**
      * Upload multiple file using Spring Controller

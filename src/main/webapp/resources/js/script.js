@@ -42,9 +42,8 @@ $(function () {
     // get cv data by id
     $('.fio').click(function () {
         var cvId = $(this).closest('tr').find('.cv_id').text();
-
         $.ajax({
-            url: locationURL + 'cv/get-cv/' + cvId,
+            url: locationURL + '/cv/get-cv/' + cvId,
             type: 'POST',
             data: '',
             contentType: "application/json",
@@ -62,6 +61,7 @@ $(function () {
                 var skills = res.skills;
                 var about = res.about;
                 var comment = res.comment;
+                var filename = res.filename;
 
 
                 $('.cv-view-fio').text(fio);
@@ -74,6 +74,18 @@ $(function () {
                 $('.cv-view-skills').text(skills);
                 $('.cv-view-about').text(about);
                 $('.cv-view-comment').text(comment);
+
+
+                var filenameArr = filename.split("\\");
+
+                /**
+                 * set link to download file
+                 * if file doesn't present than remove download link
+                 */
+                if (filenameArr[filenameArr.length - 1] != 'null')
+                    $('.cv-view-file-download').show().attr('href', filename);
+                else
+                    $('.cv-view-file-download').hide();
             },
             error: function (error) {
                 console.log("error from update comment : " + error);

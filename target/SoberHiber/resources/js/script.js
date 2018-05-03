@@ -8,7 +8,6 @@ $(function () {
         var cvId = $(this).closest('tr').find('.cv_id').text();
         var commentValue = $(this).parent().find('textarea').val();
 
-
         var commentZone = $(this).closest('.text-size-14').find('.cv-row-comment');
 
         $.ajax({
@@ -42,9 +41,7 @@ $(function () {
 
     // get cv data by id
     $('.fio').click(function () {
-
         var cvId = $(this).closest('tr').find('.cv_id').text();
-
 
         $.ajax({
             url: locationURL + 'cv/get-cv/' + cvId,
@@ -153,9 +150,9 @@ $(function () {
         var oldDate = birth.text();
         var newDate = "";
         var a = oldDate.split("-");
-        for (var i = a.length-1; i >= 0; i--) {
+        for (var i = a.length - 1; i >= 0; i--) {
             var dash = "";
-            if(i != 0)
+            if (i != 0)
                 dash = ".";
             newDate += a[i] + dash;
         }
@@ -198,8 +195,6 @@ $(function () {
                 console.log("error! cv has not been updated : ");
             }
         });
-
-
     });
 
 
@@ -236,7 +231,6 @@ $(function () {
             $(this).attr('src', locationURL + '/resources/img/star_added.png');
             $(this).attr('state', 1);
 
-
             $.ajax({
                 url: locationURL + '/cv/change-bookmark-state',
                 type: 'POST',
@@ -253,8 +247,6 @@ $(function () {
             });
         }
     });
-
-
 });
 
 

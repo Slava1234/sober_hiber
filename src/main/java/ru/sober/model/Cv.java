@@ -51,7 +51,31 @@ public class Cv {
     @Column(name = "filename")
     private String filename;
 
+    @Column(name = "last_comment_update ")
+    private String last_comment_update ;
+
     public Cv() {
+    }
+
+    @Override
+    public String toString() {
+        return "Cv{" +
+                "id=" + id +
+                ", fio='" + fio + '\'' +
+                ", birthdate='" + birthdate + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", sellary='" + sellary + '\'' +
+                ", experiance_years='" + experiance_years + '\'' +
+                ", experiance_places='" + experiance_places + '\'' +
+                ", skills='" + skills + '\'' +
+                ", about='" + about + '\'' +
+                ", comment='" + comment + '\'' +
+                ", bookmark=" + bookmark +
+                ", birth=" + birth +
+                ", filename='" + filename + '\'' +
+                ", last_comment_update='" + last_comment_update + '\'' +
+                '}';
     }
 
     public Integer getId() {
@@ -166,23 +190,11 @@ public class Cv {
         this.filename = filename;
     }
 
-    @Override
-    public String toString() {
-        return "Cv{" +
-                "id=" + id +
-                ", fio='" + fio + '\'' +
-                ", birthdate='" + birthdate + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", sellary='" + sellary + '\'' +
-                ", experiance_years='" + experiance_years + '\'' +
-                ", experiance_places='" + experiance_places + '\'' +
-                ", skills='" + skills + '\'' +
-                ", about='" + about + '\'' +
-                ", comment='" + comment + '\'' +
-                ", bookmark=" + bookmark +
-                ", birth=" + birth +
-                ", filename='" + filename + '\'' +
-                '}';
+    public String getLast_comment_update() {
+        return last_comment_update;
+    }
+
+    public void setLast_comment_update(String last_comment_update) {
+        this.last_comment_update = last_comment_update;
     }
 }

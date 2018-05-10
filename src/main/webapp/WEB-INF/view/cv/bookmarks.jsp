@@ -26,7 +26,7 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <a style="margin-top: 5px;" class="btn btn-success" href="${pageContext.request.contextPath}/cv/add">Добавить</a>
-                <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/"  class="btn btn-primary">Все резюме</a>
+                <a style="margin-top: 5px;" href="${pageContext.request.contextPath}/"  class="btn btn-primary">Назад</a>
             </div>
 
 

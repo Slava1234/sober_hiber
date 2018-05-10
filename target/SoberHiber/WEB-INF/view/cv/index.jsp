@@ -13,12 +13,17 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <title>Резюме</title>
 
+    <style>
+        mark {
+            padding: 0;
+            background-color: #f1f61a;
+        }
+    </style>
 
 </head>
 <body>
 
 <div class="container col-md-12">
-
 
     <div class="preloader"></div>
 
@@ -34,6 +39,8 @@
                          alt="bookmark"/>
                     Избранные
                 </a>
+
+
             </div>
 
 
@@ -94,7 +101,9 @@
                         </div>
                     </div>
                     <br>
-                    <p class="cv-row-comment">${cv.comment}</p>
+                    <p><span class="cv-row-comment">${cv.comment}</span><br><span class="cv-row-comment-date"
+                                                                                  style="font-size: 11px;">${cv.last_comment_update}</span>
+                    </p>
 
 
                 </td>
@@ -121,6 +130,35 @@
                         </c:otherwise>
                     </c:choose>
 
+                    <span style="display: block; margin-top: 4px;">
+                        <a href="${pageContext.request.contextPath}/upload-new-cv-file?id=${cv.id}">
+                         <img class="upload-cv-btn"
+                              style="width: 30px;cursor: pointer;" src="<c:url value="/resources/img/upload.png" />"
+                              alt="upload"/>
+                        </a>
+
+
+
+                        <c:choose>
+                            <c:when test="${cv.filename!=null}">
+                            <a href="${cv.filename}" download>
+
+                         <img class="download-cv-btn"
+                              style="width: 30px;cursor: pointer;" src="<c:url value="/resources/img/download.png" />"
+                              alt="download"/>
+                            </a>
+                            </c:when>
+                            <c:otherwise>
+                            <a  style="cursor: no-drop;opacity: 0.2;"  >
+
+                         <img class="download-cv-btn"
+                              style="width: 30px" src="<c:url value="/resources/img/download.png" />"
+                              alt="download"/>
+                            </a>
+                            </c:otherwise>
+                        </c:choose>
+
+                    </span>
 
                 </td>
 
@@ -159,8 +197,13 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="cv-view-fio font-size-13"></td>
-                        <td class="cv-view-email font-size-13"></td>
+                        <td>
+                            <p style="white-space: pre-line;" class="cv-view-fio font-size-13"></p>
+                        </td>
+                        <td>
+                            <p style="white-space: pre-line;" class="cv-view-email font-size-13"></p>
+                        </td>
+
                     </tr>
                     </tbody>
                 </table>
@@ -174,8 +217,12 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="cv-view-phone font-size-13"></td>
-                        <td class="cv-view-sellary font-size-13"></td>
+                        <td>
+                            <p style="white-space: pre-line;" class="cv-view-phone font-size-13"></p>
+                        </td>
+                        <td>
+                            <p style="white-space: pre-line;" class="cv-view-sellary font-size-13"></p>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -189,32 +236,33 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="cv-view-birthday font-size-13"></td>
-                        <td class="cv-view-experiance-years font-size-13"></td>
+                        <td>
+                            <p style="white-space: pre-line;" class="cv-view-birthday font-size-13"></p>
+                        </td>
+                        <td>
+                            <p style="white-space: pre-line;" class="cv-view-experiance-years font-size-13"></p>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
 
                 <hr>
-                <h4 class="font-size-15">Места работы</h4>
-                <textarea class="cv-view-experiance-place font-size-13" style="width: 100%" readonly rows="12"></textarea>
+                <h4 class="font-size-15" >Места работы</h4>
+                <p style="white-space: pre-line;width: 100%;" class="cv-view-experiance-place font-size-13"></p>
 
                 <hr>
                 <h4 class="font-size-15">Навыки</h4>
-                <textarea class="cv-view-skills font-size-13" style="width: 100%" readonly
-                          rows="12">cv.skills</textarea>
+                <p style="width: 100%;white-space: pre-line" class="cv-view-skills font-size-13"></p>
 
                 <hr>
                 <h4 class="font-size-15">Общие данные</h4>
-                <textarea class="cv-view-about font-size-13" style="width: 100%" readonly rows="8"></textarea>
+                <p style="width: 100%;white-space: pre-line" class="cv-view-about font-size-13"></p>
 
                 <hr>
                 <h4 class="font-size-15">Комментарий</h4>
-                <p class="cv-view-comment font-size-13"></p>
-
+                <p class="cv-view-comment font-size-13" style="width: 100%;white-space: pre-line"></p>
                 <hr>
-                <h4 class="font-size-15">Скачать резюме</h4>
-                <a href="" download class="cv-view-file-download" target="_blank">Скачать</a>
+
             </div>
         </div>
     </div>
@@ -224,142 +272,147 @@
 <!-- Edit cv -->
 <div class="modal fade" id="dataInfoEdit" tabindex="-1" role="dialog" aria-labelledby="ModalLabelEdit"
      aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" style="padding: 0 30px 0 30px;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabelEdit">Modeal</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th class="font-size-15" scope="col">ФИО</th>
-                        <th class="font-size-15" scope="col">EMAIL</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="cv-edit-fio font-size-13">
-                            <div class="form-group">
-                                <input name="editable_fio" type="text" class="form-control">
-                            </div>
-                        </td>
-                        <td class="cv-edit-email font-size-13">
-                            <div class="form-group">
-                                <input name="editable_email" type="text" class="form-control">
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th class="font-size-15" scope="col">ТЕЛЕФОН</th>
-                        <th class="font-size-15" scope="col">Зарплата</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="cv-edit-phone font-size-13">
-                            <div class="form-group">
-                                <input name="editable_phone" type="text" class="form-control">
-                            </div>
-                        </td>
-                        <td class="cv-edit-sellary font-size-13">
-                            <div class="form-group">
-                                <input name="editable_sellary" type="text" class="form-control">
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th class="font-size-15" scope="col">Дата рождения</th>
-                        <th class="font-size-15" scope="col">Опыт работы</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="cv-edit-birthday font-size-13">
-                            <div class="form-group">
-                                <input name="editable_birthdate" type="text" class="form-control">
-                            </div>
-                        </td>
-                        <td class="cv-edit-experiance-years font-size-13">
-                            <div class="form-group">
-                                <input name="editable_experiance_years" type="text" class="form-control">
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <!---->
-                <h4 class="font-size-15 font-size-13">Новая дата рождения</h4>
-                <div class="form-group">
-                    <input name="editable_birth" type="text" class="form-control datepicker">
+    <form id="edit_cv_form" enctype="multipart/form-data">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="padding: 0 30px 0 30px;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabelEdit">Modeal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="font-size-15" scope="col">ФИО</th>
+                            <th class="font-size-15" scope="col">EMAIL</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="cv-edit-fio font-size-13">
+                                <div class="form-group">
+                                    <input name="editable_fio" type="text" class="form-control">
+                                </div>
+                            </td>
+                            <td class="cv-edit-email font-size-13">
+                                <div class="form-group">
+                                    <input name="editable_email" type="text" class="form-control">
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                <hr>
-                <h4 class="font-size-15">Места работы</h4>
-                <div class="form-group">
-                    <textarea name="editable_experiance_places" class="cv-edit-experiance-place font-size-13 form-control" style="width: 100%"
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="font-size-15" scope="col">ТЕЛЕФОН</th>
+                            <th class="font-size-15" scope="col">Зарплата</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="cv-edit-phone font-size-13">
+                                <div class="form-group">
+                                    <input name="editable_phone" type="text" class="form-control">
+                                </div>
+                            </td>
+                            <td class="cv-edit-sellary font-size-13">
+                                <div class="form-group">
+                                    <input name="editable_sellary" type="text" class="form-control">
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="font-size-15" scope="col">Дата рождения</th>
+                            <th class="font-size-15" scope="col">Опыт работы</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="cv-edit-birthday font-size-13">
+                                <div class="form-group">
+                                    <input name="editable_birthdate" type="text" class="form-control">
+                                </div>
+                            </td>
+                            <td class="cv-edit-experiance-years font-size-13">
+                                <div class="form-group">
+                                    <input name="editable_experiance_years" type="text" class="form-control">
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!---->
+                    <h4 class="font-size-15 font-size-13">Новая дата рождения</h4>
+                    <div class="form-group">
+                        <input name="editable_birth" type="text" class="form-control datepicker">
+                    </div>
+
+                    <hr>
+                    <h4 class="font-size-15">Места работы</h4>
+                    <div class="form-group">
+                    <textarea name="editable_experiance_places"
+                              class="cv-edit-experiance-place font-size-13 form-control" style="width: 100%"
                               rows="12"></textarea>
-                </div>
+                    </div>
 
-                <hr>
-                <h4 class="font-size-15">Навыки</h4>
-                <div class="form-group">
+                    <hr>
+                    <h4 class="font-size-15">Навыки</h4>
+                    <div class="form-group">
                 <textarea name="editable_skills" class="cv-edit-skills font-size-13 form-control" style="width: 100%"
                           rows="12"></textarea>
+                    </div>
+
+                    <hr>
+                    <h4 class="font-size-15">Общие данные</h4>
+                    <div class="form-group">
+                        <textarea name="editable_about" class="cv-edit-about font-size-13 form-control"
+                                  style="width: 100%" rows="8"></textarea>
+                    </div>
+
+                    <hr>
+                    <h4 class="font-size-15">Комментарий</h4>
+                    <div class="form-group cv-edit-comment font-size-13">
+                        <input name="editable_comment" type="text" class="form-control">
+                    </div>
+
                 </div>
-
-                <hr>
-                <h4 class="font-size-15">Общие данные</h4>
-                <div class="form-group">
-                    <textarea name="editable_about" class="cv-edit-about font-size-13 form-control" style="width: 100%" rows="8"></textarea>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary cv-edit-save">Сохранить</button>
                 </div>
-
-                <hr>
-                <h4 class="font-size-15">Комментарий</h4>
-                <div class="form-group cv-edit-comment font-size-13">
-                    <input name="editable_comment" type="text" class="form-control">
-                </div>
-
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary cv-edit-save">Сохранить</button>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 
 
 <script src="<c:url value="/resources/js/jquery.js" />"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
 <script src="<c:url value="/resources/js/bootstrap.js" />"></script>
 <script src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="<c:url value="/resources/js/script.js" />"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.es6.min.js"></script>
+<script src="<c:url value="/resources/js/script.js" />"></script>
 
 
 <script>
     $(document).ready(function () {
         $('#cv-data-table').DataTable();
 
-        $( ".datepicker" ).datepicker({
-            dateFormat : 'dd.mm.yy',
-            changeMonth : true,
-            changeYear : true,
+        $(".datepicker").datepicker({
+            dateFormat: 'dd.mm.yy',
+            changeMonth: true,
+            changeYear: true,
             yearRange: '-100y:c+nn',
             maxDate: '-1d'
         });
@@ -367,7 +420,11 @@
 
         // preloader
         $('.preloader').fadeOut(500);
+
+
     });
+
+
 </script>
 
 

@@ -5,12 +5,14 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import ru.sober.model.Cv;
 
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +55,7 @@ public class CvDaoImpl implements CvDao {
     }
 
     @Override
+    //@Cacheable("indexResults")
     @SuppressWarnings("unchecked")
     public List<Cv> listCvs() {
         Session session = this.sessionFactory.getCurrentSession();
@@ -128,20 +131,28 @@ public class CvDaoImpl implements CvDao {
 
     public void updateCvComment(int id, String comment) {
         Session session = this.sessionFactory.getCurrentSession();
-        String hqlUpdate = "update Cv cv set cv.comment = :newComment where cv.id = :cvId";
+        String hqlUpdate = "update Cv cv set cv.comment = :newComment, cv.last_comment_update = :newLastCommentUpdate where cv.id = :cvId";
+
+        String date = new SimpleDateFormat("dd.MM.yy").format(Calendar.getInstance().getTime());
+        String time = new SimpleDateFormat("HH:mm").format(Calendar.getInstance().getTime());
+
 
         int updatedEntities = session.createQuery(hqlUpdate)
                 .setString("newComment", comment)
+                .setString("newLastCommentUpdate", date + " " + time)
                 .setInteger("cvId", id)
                 .executeUpdate();
-
     }
 
-    public String getCvComment(int id) {
+    public Cv getCvComment(int id) {
+        // Session session = this.sessionFactory.getCurrentSession();
+        //Query query = session.createQuery("SELECT cv.comment  FROM Cv cv WHERE cv.id=:uid");
+        // query.setParameter("uid", id);
+
+        // TODO normalize this hql query
         Session session = this.sessionFactory.getCurrentSession();
-        Query query = session.createQuery("SELECT cv.comment FROM Cv cv WHERE cv.id=:uid");
-        query.setParameter("uid", id);
-        return query.uniqueResult().toString();
+        Cv cv = (Cv) session.get(Cv.class, id);
+        return cv;
     }
 
 
@@ -161,6 +172,17 @@ public class CvDaoImpl implements CvDao {
         Criteria criteria = session.createCriteria(Cv.class);
         criteria.add(Restrictions.eq("bookmark", 1));
         return criteria.list();
+    }
+
+    public void updateFileName(int id, String filename) {
+        Session session = this.sessionFactory.getCurrentSession();
+
+        String hqlUpdate = "update Cv cv set cv.filename = :newFilename where cv.id = :cvId";
+
+        session.createQuery(hqlUpdate)
+                .setString("newFilename", filename)
+                .setInteger("cvId", id)
+                .executeUpdate();
     }
 
 

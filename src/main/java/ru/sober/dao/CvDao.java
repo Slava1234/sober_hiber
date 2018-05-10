@@ -12,7 +12,7 @@ public interface CvDao {
 
     public void updateCvComment(int id, String comment);
 
-    public String getCvComment(int id);
+    public Cv getCvComment(int id);
 
     public void removeCv(int id);
 
@@ -25,4 +25,6 @@ public interface CvDao {
     public void changeBookmarkState(int id, int state);
 
     public List<Cv> getBookmarks();
+
+    public void updateFileName(int id, String filename);
 }

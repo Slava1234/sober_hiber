@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import ru.sober.model.Cv;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,6 +31,7 @@ public class FileUploadController {
             .getLogger(FileUploadController.class);
 
 
+
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     public String uploadFileHandler2() {
         return "cv/upload";
@@ -38,15 +40,10 @@ public class FileUploadController {
     @RequestMapping(value = "/u", method = RequestMethod.GET)
     @ResponseBody
     public String uploadFileHandler3(HttpServletRequest request) {
-        String name = "";
-
-        String resources = request.getSession().getServletContext().getRealPath("/resources/") +
-                File.separator + "files" + File.separator + name;
-
-        File fileToDelete = new File(resources);
-        boolean success = fileToDelete.delete();
-
-        return "status " + success;
+        //String date = new SimpleDateFormat("yyyy.MM.dd").format(Calendar.getInstance().getTime());
+        String date = new SimpleDateFormat("dd.MM.yy").format(Calendar.getInstance().getTime());
+        String time= new SimpleDateFormat("HH:mm").format(Calendar.getInstance().getTime());
+        return date +" "+ time;
     }
 
 

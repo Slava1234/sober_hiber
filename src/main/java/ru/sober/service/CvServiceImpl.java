@@ -61,7 +61,7 @@ public class CvServiceImpl implements CvDao {
 
     @Override
     @Transactional
-    public String getCvComment(int id) {
+    public Cv getCvComment(int id) {
         return this.cvDao.getCvComment(id);
     }
 
@@ -76,6 +76,13 @@ public class CvServiceImpl implements CvDao {
     public List<Cv> getBookmarks() {
         return this.cvDao.getBookmarks();
     }
+
+    @Override
+    @Transactional
+    public void updateFileName(int id, String filename) {
+        this.cvDao.updateFileName(id, filename);
+    }
+
 
 }
 

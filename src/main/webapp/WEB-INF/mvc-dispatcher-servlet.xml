@@ -72,9 +72,19 @@
     <!-- Upload files  bean -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- setting maximum upload size -->
-        <property name="maxUploadSize" value="100000"/>
+        <property name="maxUploadSize" value="1000000"/>
 
     </bean>
 
 
+    <!-- Interceptors -->
+<!--
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*" />
+            <mvc:exclude-mapping path="/auth"/>
+            <bean class="ru.sober.interceptors.AuthInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+-->
 </beans>

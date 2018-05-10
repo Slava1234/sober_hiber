@@ -1,15 +1,21 @@
 package ru.sober.controllers;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.session.MapSession;
+import org.springframework.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import ru.sober.dao.CvDao;
 import ru.sober.model.Cv;
@@ -28,7 +34,9 @@ import java.util.*;
 public class CvController {
 
     // TODO resources and path vars are duplicated
+    // TODO file upload implementations are duplicated
 
+    private String timeStampFileName = null;
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
@@ -45,23 +53,48 @@ public class CvController {
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-    public ModelAndView getIndex(HttpServletRequest request) {
+    //@Cacheable("indexResults")
+    public ModelAndView getIndex() {
+        long start = System.nanoTime();
         List<Cv> cvs = cvServiceImpl.listCvs();
 
-        String resources = request.getSession().getServletContext().getRealPath("/resources/");
-        String path = resources + File.separator + "files" + File.separator;
+        String path = "resources" + File.separator + "files" + File.separator;
 
         // if cv has file update filename with full path (to provide convenient download link)
-        for (Cv cv : cvs)
-            if (cv.getFilename() != null)
+        for (Cv cv : cvs) {
+            if (cv.getFilename() != null) {
                 cv.setFilename(path + cv.getFilename());
+            }
+
+            // unescape html entities
+            cv.setExperiance_years(StringEscapeUtils.unescapeHtml4(cv.getExperiance_years()));
+        }
+
+
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("cv/index");
         modelAndView.addObject("cvs", cvs);
-        modelAndView.addObject("amount", cvs.size());
+
+
+
+
+        long finish = System.nanoTime();
+        long timeConsumedMillis = finish - start;
+
+
+
+        modelAndView.addObject("time", timeConsumedMillis);
         return modelAndView;
     }
+
+
+    @RequestMapping(value = "/cacheEvictMainPage", method = RequestMethod.GET)
+    @CacheEvict(value = "indexResults", allEntries = true)
+    public String cacheEvictMainPage() {
+        return "redirect:/";
+    }
+
 
 
     @RequestMapping(value = "/cv/add", method = RequestMethod.GET)
@@ -77,48 +110,26 @@ public class CvController {
 
         cv.setBirth(this.reformatRowDate(cv.getBirthdate()));
         String timeStamp = null;
-        String timeStampFileName = null;
-        // upload file
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
 
-                String resources = request.getSession().getServletContext().getRealPath("/resources/");
-                String path = resources + File.separator + "files";
+        uploadFile(file, request);
 
-                File dir = new File(path);
-
-                if (!dir.exists())
-                    dir.mkdirs();
-
-                // Create the file on server
-                timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                timeStampFileName = timeStamp + "_" + file.getOriginalFilename();
-
-                File serverFile = new File(dir.getAbsolutePath()
-                        + File.separator + timeStampFileName);
-                BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(serverFile));
-                stream.write(bytes);
-                stream.close();
-
-                logger.info("Server File Location=" + serverFile.getAbsolutePath());
-
-                logger.info("You successfully uploaded file=" + file.getOriginalFilename());
-            } catch (Exception e) {
-                logger.error("You failed to upload " + file.getOriginalFilename() + " => " + e.getMessage());
-            }
-        } else {
-            logger.error("2 You failed to upload " + file.getOriginalFilename()
-                    + " because the file was empty.");
-        }
 
         cv.setFilename(timeStampFileName);
         cvServiceImpl.addCv(cv);
+
+
+
         return "redirect:/";
     }
 
 
+    /**
+     * Deletes file if exists
+     *
+     * @param fileName that is present in db
+     * @param request
+     * @return true if delete was successful
+     */
     private boolean deleteFile(String fileName, HttpServletRequest request) {
         String resources = request.getSession().getServletContext().getRealPath("/resources/") +
                 File.separator + "files" + File.separator + fileName;
@@ -128,39 +139,7 @@ public class CvController {
     }
 
 
-    /**
-     * Reform date according to postgres date type format
-     *
-     * @param rowDate row date format
-     * @return Date
-     */
-    private Date reformatRowDate(String rowDate) {
-        String[] as = rowDate.split("\\.");
-        StringBuilder sb = new StringBuilder();
 
-        for (int j = as.length - 1; j >= 0; j--) {
-            String dash = "";
-            if (j != 0)
-                dash = "-";
-            sb.append(as[j] + dash);
-        }
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date parsed = null;
-        try {
-            parsed = format.parse(sb.toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        java.sql.Date sql = null;
-        try {
-            sql = new java.sql.Date(parsed.getTime());
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return sql;
-    }
 
 
     @RequestMapping(value = "/cv/edit/{id}", method = RequestMethod.POST)
@@ -183,26 +162,30 @@ public class CvController {
 
     @RequestMapping(value = "/cv/get-comment/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> postGetCommentAjax(@PathVariable("id") String id) {
+    //public ResponseEntity<String> postGetCommentAjax(@PathVariable("id") String id) {
+    public Cv postGetCommentAjax(@PathVariable("id") String id) {
         int cvId = Integer.parseInt(id);
 
-        String comment = cvServiceImpl.getCvComment(cvId);
+        /*String comment = cvServiceImpl.getCvComment(cvId);
+
+
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "text/html;charset=UTF-8");
-        return new ResponseEntity<String>(comment, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<String>(comment, httpHeaders, HttpStatus.OK);*/
+        return cvServiceImpl.getCvComment(cvId);
     }
+
 
 
     @RequestMapping(value = "/cv/get-cv/{id}", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public Cv postGetCvAjax(@PathVariable("id") String id, HttpServletRequest request) {
+    public Cv postGetCvAjax(@PathVariable("id") String id) {
         int cvId = Integer.parseInt(id);
 
         Cv cv = cvServiceImpl.getCvById(cvId);
 
-        String resources = request.getSession().getServletContext().getRealPath("/resources/");
-        String path = resources + File.separator + "files" + File.separator + cv.getFilename();
+        String path = "resources" + File.separator + "files" + File.separator + cv.getFilename();
 
         cv.setFilename(path);
 
@@ -241,13 +224,46 @@ public class CvController {
         cv.setComment(editable_comment);
         cv.setBookmark(0);
 
+        if (editable_birth != null)
+            cv.setBirth(this.reformatRowDate(editable_birth));
 
-        cv.setBirth(this.reformatRowDate(editable_birth));
 
         cvServiceImpl.updateCv(cv);
     }
 
+    /**
+     * Reform date according to postgres date type format
+     *
+     * @param rowDate row date format
+     * @return Date
+     */
+    private Date reformatRowDate(String rowDate) {
+        String[] as = rowDate.split("\\.");
+        StringBuilder sb = new StringBuilder();
 
+        for (int j = as.length - 1; j >= 0; j--) {
+            String dash = "";
+            if (j != 0)
+                dash = "-";
+            sb.append(as[j] + dash);
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date parsed = null;
+        try {
+            parsed = format.parse(sb.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        java.sql.Date sql = null;
+        try {
+            sql = new java.sql.Date(parsed.getTime());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return sql;
+    }
 
 
 
@@ -306,6 +322,81 @@ public class CvController {
         cvServiceImpl.changeBookmarkState(cvId, state2);
     }
 
+    @RequestMapping(value = "/upload-new-cv-file", method = RequestMethod.GET)
+    public String getUploadNewCvFile() {
+        return "cv/upload";
+    }
+
+    @RequestMapping(value = "/upload-new-cv-file-handler", method = RequestMethod.POST)
+    public String postUploadNewCvFile(@RequestParam("id") Integer id,
+                          @RequestParam("file") MultipartFile file,
+                          HttpServletRequest request) {
+
+
+        Cv cv = this.cvServiceImpl.getCvById(id);
+
+
+        // before update delete the file if exists
+        if (cv.getFilename() != null) {
+            String resources = request.getSession().getServletContext().getRealPath("/resources/") +
+                    File.separator + "files" + File.separator + cv.getFilename();
+
+            File fileToDelete = new File(resources);
+            boolean status = fileToDelete.delete();
+            if(status) {
+                logger.info("file " + resources + " has been successfully deleted");
+            }
+        }
+
+
+        uploadFile(file, request);
+
+        this.cvServiceImpl.updateFileName(id, timeStampFileName);
+        return "redirect:/";
+    }
+
+
+    private void uploadFile(MultipartFile file, HttpServletRequest request) {
+
+        String timeStamp = null;
+
+        // upload file
+        if (!file.isEmpty()) {
+            try {
+                byte[] bytes = file.getBytes();
+
+                String resources = request.getSession().getServletContext().getRealPath("/resources/");
+                String path = resources + File.separator + "files";
+
+                File dir = new File(path);
+
+                if (!dir.exists())
+                    dir.mkdirs();
+
+                // Create the file on server
+                timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                timeStampFileName = timeStamp + "_" + file.getOriginalFilename();
+
+                File serverFile = new File(dir.getAbsolutePath()
+                        + File.separator + timeStampFileName);
+                BufferedOutputStream stream = new BufferedOutputStream(
+                        new FileOutputStream(serverFile));
+                stream.write(bytes);
+                stream.close();
+
+                logger.info("Server File Location=" + serverFile.getAbsolutePath());
+
+                logger.info("You successfully uploaded file=" + file.getOriginalFilename());
+            } catch (Exception e) {
+                logger.error("You failed to upload " + file.getOriginalFilename() + " => " + e.getMessage());
+            }
+        } else {
+            logger.error("2 You failed to upload " + file.getOriginalFilename()
+                    + " because the file was empty.");
+        }
+    }
+
+
 
     @RequestMapping(value = "/bookmarks", method = RequestMethod.GET, produces = "application/json")
     public ModelAndView getBookmarks() {
@@ -317,6 +408,8 @@ public class CvController {
 
         return modelAndView;
     }
+
+
 
 
 }

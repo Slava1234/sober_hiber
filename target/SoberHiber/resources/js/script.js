@@ -9,6 +9,7 @@ $(function () {
         var commentValue = $(this).parent().find('textarea').val();
 
         var commentZone = $(this).closest('.text-size-14').find('.cv-row-comment');
+        var commentDate = $(this).closest('.text-size-14').find('.cv-row-comment-date');
 
         $.ajax({
             url: locationURL + '/cv/update-comment/' + cvId,
@@ -25,7 +26,13 @@ $(function () {
                     dataType: 'text',
                     success: function (response) {
                         console.log("updated comment = " + response);
-                        commentZone.text(response);
+
+                        var res = JSON.parse(response);
+
+                        commentZone.text(res.comment);
+                        commentDate.text(res.last_comment_update);
+
+
                     },
                     error: function (error) {
                         console.log("error from get comment: " + error);
@@ -41,6 +48,10 @@ $(function () {
 
     // get cv data by id
     $('.fio').click(function () {
+        if (locationURL.search(/bookmarks/)) {
+            locationURL = locationURL.replace("bookmarks", '');
+        }
+
         var cvId = $(this).closest('tr').find('.cv_id').text();
         $.ajax({
             url: locationURL + '/cv/get-cv/' + cvId,
@@ -83,9 +94,36 @@ $(function () {
                  * if file doesn't present than remove download link
                  */
                 if (filenameArr[filenameArr.length - 1] != 'null')
-                    $('.cv-view-file-download').show().attr('href', filename);
+                    $('.cv-view-file-download').show().attr('href', locationURL + filename);
                 else
                     $('.cv-view-file-download').hide();
+
+
+
+                // highlight searched words
+                var mark = function() {
+
+                    // Read the keyword
+                    var keyword = $("#cv-data-table_filter input[type='search']").val();
+
+                    // Determine selected options
+                    /*var options = {};
+                    $("input[name='opt[]']").each(function() {
+                        options[$(this).val()] = $(this).is(":checked");
+                    });*/
+
+                    // Remove previous marked elements and mark
+                    // the new keyword inside the context
+                    var context = "#dataInfo";
+                    $(context).unmark({
+                        done: function() {
+                            $(context).mark(keyword);
+                        }
+                    });
+                };
+
+                mark();
+
             },
             error: function (error) {
                 console.log("error from update comment : " + error);
@@ -121,7 +159,10 @@ $(function () {
 
 
     $('.edit-cv-btn').click(function () {
+
         cvId = $(this).closest('tr').find('.cv_id').text();
+
+
         fio = $(this).closest('tr').find('.cv-fio');
         email = $(this).closest('tr').find('.cv-email');
         phone = $(this).closest('tr').find('.cv-phone');
@@ -145,6 +186,7 @@ $(function () {
         editable_about = $('#dataInfoEdit .cv-edit-about');
         editable_comment = $('#dataInfoEdit .cv-edit-comment .form-control');
         editable_birth = $('#dataInfoEdit .datepicker');
+        editable_file = $('#dataInfoEdit #file');
 
 
         editable_fio.val(fio.text());
@@ -191,20 +233,20 @@ $(function () {
             },
             success: function (response) {
                 console.log("cv has been successfully updated + " + response);
-                fio.text(editable_fio.val());
-                email.text(editable_email.val());
-                phone.text(editable_phone.val());
-                sellary.text(editable_sellary.val());
-                birthdate.text(editable_birthdate.val());
-                experiance_years.text(editable_experiance_years.val());
-                experiance_places.text(editable_experiance_places.val());
-                skills.text(editable_skills.val());
-                about.text(editable_about.val());
-                comment.text(editable_comment.val());
-                birth.text(editable_birth.val());
+                 fio.children('a').text(editable_fio.val());
+                 email.text(editable_email.val());
+                 phone.text(editable_phone.val());
+                 sellary.text(editable_sellary.val());
+                 birthdate.text(editable_birthdate.val());
+                 experiance_years.text(editable_experiance_years.val());
+                 experiance_places.text(editable_experiance_places.val());
+                 skills.text(editable_skills.val());
+                 about.text(editable_about.val());
+                 comment.text(editable_comment.val());
+                 birth.text(editable_birth.val());
             },
             error: function (error) {
-                console.log("error! cv has not been updated : ");
+                console.log("error! cv has not been updated : " + error);
             }
         });
     });
@@ -259,6 +301,24 @@ $(function () {
             });
         }
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 

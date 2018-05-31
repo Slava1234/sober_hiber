@@ -58,7 +58,7 @@ public class CvController {
         long start = System.nanoTime();
         List<Cv> cvs = cvServiceImpl.listCvs();
 
-        String path = "resources" + File.separator + "files" + File.separator;
+        String path = "SoberHiber/resources" + File.separator + "files" + File.separator;
 
         // if cv has file update filename with full path (to provide convenient download link)
         for (Cv cv : cvs) {
